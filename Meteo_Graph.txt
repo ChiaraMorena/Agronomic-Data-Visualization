@@ -1,0 +1,112 @@
+import numpy as np
+import matplotlib.pyplot as plt 
+import pandas as pd
+import os
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+
+#2020 data
+
+#import data from excel specifing the sheet and the columns name so the header is automatically shown
+file_name =  "C:/Users/chiara.morena3/OneDrive - Alma Mater Studiorum Università di Bologna/Documents/2023/Meteo Biochar/2020_2021.xls"
+sheet = "Meteo_2020"
+data = pd.read_excel(io=file_name, sheet_name=sheet, usecols=[0, 1,2,3], names=['Data', 'Tmax','Tmin','rain'])
+
+# print first 5 rows of the dataframe
+print(data.head(5)) 
+
+#add data into variables, but in this work data will be read from the database -data variable-
+Date = list([data["Data"]])
+Tmax = list([data["Tmax"]])
+Tmin = [data["Tmin"].values]
+rain = [data["rain"].values]
+
+#set fig size and desired resolution (dpi) fitting with journal request
+plt.figure(figsize=(800/288, 800/288), dpi=288)
+#set font for all the plot
+plt.rcParams["font.family"] = "Times New Roman"
+
+#set fig and axes, not sure the meaning 
+fig, ax = plt.subplots()
+
+#plotting max and min temperature in the same ax, different markers  
+ax.plot("Data","Tmax",data=data, color="black", marker='.', markersize=4, linewidth=1)
+ax.plot("Data","Tmin",data=data,color="black",alpha=0.5, markersize=3, marker='^',linewidth=1)
+
+#setting ax y range of values and label. labelpad indicate the distance of the label from the ax
+ax.set_ylim(0, 45)
+
+# write y ax label
+plt.ylabel('Temperature (°C)', fontsize=14, labelpad=5)
+
+#create a different ax2 to plot rainfall but with the same position of the ax
+ax2 = ax.twinx()
+
+#plotting rain data with a bar graph, specify ax2
+ax2.bar("Data","rain",data=data, color='black',label='Rain')
+
+#set a different range of value for the new plot, this will be shown on the left
+ax2.set_ylim(0, 350)
+
+#Choose wich data show on x label and assign a different label
+plt.xticks(["2020-04", "2020-05", "2020-06","2020-07","2020-08","2020-09","2020-10"], ['Apr.', 'May', 'June','July','Aug.','Sept.','Oct.'])
+
+#write y ax label, rotate 
+plt.ylabel('Rainfall (mm)', fontsize=14, rotation= 270, labelpad=15)
+
+#create legend manually to aggregate the legends of the three different plots:
+#create a line and a label
+line = mlines.Line2D([], [], color='black', marker='.',
+                          markersize=4, label='Maximum Temperature')
+line2 = mlines.Line2D([], [], color='black',alpha=0.5, marker='^',
+                          markersize=4, label='Minimum Temperature')
+#create the patch for the rain
+patch2 = mpatches.Patch(color='black', label='Rainfall')
+#create the legend and set the position , frameon false deletes the border 
+plt.legend(handles=[line,line2,patch2], loc='upper left', frameon = False )
+
+#set plot title and size, don't use ax.title or fig.title
+plt.title("2020", fontsize=18)
+
+#show the plot, this is important for line plot for some reason
+plt.show()
+
+#save fig in the same directiory of the open prompt or set a directiory
+fig.savefig('meteo2020.tif',dpi=288)
+
+#2021 data
+
+file_name =  "C:/Users/chiara.morena3/OneDrive - Alma Mater Studiorum Università di Bologna/Documents/2023/Meteo Biochar/2020_2021.xls"
+sheet = "Meteo_2021"
+data21 = pd.read_excel(io=file_name, sheet_name=sheet, usecols=[0, 1,2,3], names=['Data', 'Tmax','Tmin','rain'])
+print(data.head(5))  # print first 5 rows of the dataframe
+
+Date21 = list([data21["Data"]])
+Tmax21 = list([data21["Tmax"]])
+Tmin21 = [data21["Tmin"].values]
+rain21 = [data21["rain"].values]
+
+plt.figure(figsize=(800/288, 800/288), dpi=288)
+plt.rcParams["font.family"] = "Times New Roman"
+fig, ax = plt.subplots()
+ax.plot("Data","Tmax",data=data21, color="black", marker='.', markersize=4, linewidth=1)
+ax.plot("Data","Tmin",data=data21,color="black",alpha=0.6, markersize=3, marker='^',linewidth=1)
+ax.set_ylim(0, 45)
+plt.ylabel('Temperature (°C)', fontsize=14, labelpad=5)
+
+ax2 = ax.twinx()
+ax2.bar("Data","rain",data=data21, color='black')#,label='Rain')
+ax2.set_ylim(0, 350)
+plt.xticks(["2021-04", "2021-05", "2021-06","2021-07","2021-08","2021-09","2021-10"], ['Apr.', 'May', 'June','July','Aug.','Sept.','Oct.'])
+plt.ylabel('Rainfall (mm)', fontsize=14, rotation= 270, labelpad=15)
+#plt.tight_layout()
+
+line = mlines.Line2D([], [], color='black', marker='.',
+                          markersize=4, label='Maximum Temperature')
+line2 = mlines.Line2D([], [], color='black',alpha=0.5, marker='^',
+                          markersize=4, label='Minimum Temperature')
+patch2 = mpatches.Patch(color='black', label='Rainfall')
+plt.legend(handles=[line,line2,patch2], loc='upper left', frameon = False)
+plt.title("2021", fontsize=18)
+plt.show()
+fig.savefig('meteo2021.tif', dpi=288)
